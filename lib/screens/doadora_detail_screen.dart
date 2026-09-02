@@ -4,14 +4,29 @@ import '../model/doadora.dart';
 import '../components/jornada_timeline.dart';
 import '../components/status_badge.dart';
 import 'nova_coleta_screen.dart';
+import 'nova_doadora_screen.dart';
 
-class DoadoraDetailScreen extends StatelessWidget {
+class DoadoraDetailScreen extends StatefulWidget {
   final Doadora doadora;
+  final List<Doadora> doadoras;
+  final void Function(Doadora doadoraAtualizada)? onDoadoraAtualizada;
 
-  const DoadoraDetailScreen({super.key, required this.doadora});
+  const DoadoraDetailScreen({
+    super.key,
+    required this.doadora,
+    required this.doadoras,
+    this.onDoadoraAtualizada,
+  });
+
+  @override
+  State<DoadoraDetailScreen> createState() => _DoadoraDetailScreenState();
+}
+
+class _DoadoraDetailScreenState extends State<DoadoraDetailScreen> {
+  late Doadora _doadora = widget.doadora;
 
   Color get _corRisco {
-    switch (doadora.risco) {
+    switch (_doadora.risco) {
       case NivelRisco.baixo:
         return Colors.green;
       case NivelRisco.medio:
@@ -44,7 +59,7 @@ class DoadoraDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(doadora.nome)),
+      appBar: AppBar(title: Text(_doadora.nome)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),
@@ -62,12 +77,15 @@ class DoadoraDetailScreen extends StatelessWidget {
                           'Score de engajamento',
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
-                        StatusBadge(texto: doadora.riscoLabel, cor: _corRisco),
+                        StatusBadge(
+                          texto: _doadora.riscoLabel,
+                          cor: _corRisco,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '${doadora.score}',
+                      '${_doadora.score}',
                       style:
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
@@ -78,14 +96,14 @@ class DoadoraDetailScreen extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: LinearProgressIndicator(
-                        value: doadora.progressoJornada,
+                        value: _doadora.progressoJornada,
                         minHeight: 8,
                         backgroundColor: Colors.grey[200],
                       ),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Dia ${doadora.diaJornada} de 30 na jornada Lactare',
+                      'Dia ${_doadora.diaJornada} de 30 na jornada Lactare',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -103,13 +121,13 @@ class DoadoraDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _infoLinha(context, 'Idade / Cidade',
-                        '${doadora.idade} anos · ${doadora.cidade}'),
+                        '${_doadora.idade} anos · ${_doadora.cidade}'),
                     _infoLinha(context, 'Bebê',
-                        '${doadora.bebeNome} · ${doadora.bebeIdadeDias} dias'),
-                    _infoLinha(context, 'Parto', doadora.tipoParto),
+                        '${_doadora.bebeNome} · ${_doadora.bebeIdadeDias} dias'),
+                    _infoLinha(context, 'Parto', _doadora.tipoParto),
                     _infoLinha(
-                        context, 'Amamentação', doadora.statusAmamentacao),
-                    _infoLinha(context, 'Telefone', doadora.telefone),
+                        context, 'Amamentação', _doadora.statusAmamentacao),
+                    _infoLinha(context, 'Telefone', _doadora.telefone),
                   ],
                 ),
               ),
@@ -121,16 +139,44 @@ class DoadoraDetailScreen extends StatelessWidget {
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: JornadaTimeline(eventos: doadora.jornada),
+                child: JornadaTimeline(eventos: _doadora.jornada),
               ),
             ),
             const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      final doadoraEditada = await Navigator.of(context)
+                          .push<Doadora>(
+                        MaterialPageRoute(
+                          builder: (_) => NovaDoadoraScreen(doadora: _doadora),
+                        ),
+                      );
+
+                      if (doadoraEditada != null) {
+                        setState(() {
+                          _doadora = doadoraEditada;
+                        });
+                        widget.onDoadoraAtualizada?.call(doadoraEditada);
+                      }
+                    },
+                    icon: const Icon(Icons.edit_outlined),
+                    label: const Text('Editar doadora'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
             FilledButton.icon(
               onPressed: () async {
                 final novaColeta = await Navigator.of(context).push<Coleta>(
                   MaterialPageRoute(
-                    builder: (_) =>
-                        NovaColetaScreen(doadoraPreSelecionada: doadora),
+                    builder: (_) => NovaColetaScreen(
+                      doadoras: widget.doadoras,
+                      doadoraPreSelecionada: _doadora,
+                    ),
                   ),
                 );
                 if (novaColeta != null && context.mounted) {

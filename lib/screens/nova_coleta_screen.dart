@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import '../data/doadoras_mock.dart';
 import '../model/coleta.dart';
 import '../model/doadora.dart';
 
 class NovaColetaScreen extends StatefulWidget {
+  final List<Doadora> doadoras;
   final Doadora? doadoraPreSelecionada;
 
-  const NovaColetaScreen({super.key, this.doadoraPreSelecionada});
+  const NovaColetaScreen({
+    super.key,
+    required this.doadoras,
+    this.doadoraPreSelecionada,
+  });
 
   @override
   State<NovaColetaScreen> createState() => _NovaColetaScreenState();
@@ -89,7 +93,7 @@ class _NovaColetaScreenState extends State<NovaColetaScreen> {
                   border: OutlineInputBorder(),
                 ),
                 items: [
-                  for (final doadora in doadorasMock)
+                  for (final doadora in widget.doadoras)
                     DropdownMenuItem(
                       value: doadora,
                       child: Text(doadora.nome),

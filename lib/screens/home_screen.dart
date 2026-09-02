@@ -11,8 +11,6 @@ import 'doadora_detail_screen.dart';
 import 'nova_coleta_screen.dart';
 import 'nova_doadora_screen.dart';
 
-
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -48,7 +46,19 @@ class _HomeScreenState extends State<HomeScreen> {
     final Doadora doadora = buscarDoadoraPorId(doadoraId);
     final novaColeta = await Navigator.of(context).push<Coleta>(
       MaterialPageRoute(
-        builder: (_) => DoadoraDetailScreen(doadora: doadora),
+        builder: (_) => DoadoraDetailScreen(
+          doadora: doadora,
+          doadoras: _doadoras,
+          onDoadoraAtualizada: (doadoraAtualizada) {
+            setState(() {
+              final index = _doadoras
+                  .indexWhere((item) => item.id == doadoraAtualizada.id);
+              if (index != -1) {
+                _doadoras[index] = doadoraAtualizada;
+              }
+            });
+          },
+        ),
       ),
     );
 
@@ -70,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _abrirNovaColeta() async {
     final novaColeta = await Navigator.of(context).push<Coleta>(
-      MaterialPageRoute(builder: (_) => const NovaColetaScreen()),
+      MaterialPageRoute(builder: (_) => NovaColetaScreen(doadoras: _doadoras)),
     );
 
     if (novaColeta != null) {
