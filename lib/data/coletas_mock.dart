@@ -1,0 +1,50 @@
+import '../model/coleta.dart';
+
+final List<Coleta> coletasMock = [
+  Coleta(
+    id: 'c01',
+    data: DateTime(2026, 5, 13),
+    hora: '09:00',
+    tipo: TipoColeta.domiciliar,
+    doadoraId: 'd01',
+    doadoraNome: 'Mariana Silva',
+    status: StatusColeta.agendada,
+  ),
+  Coleta(
+    id: 'c02',
+    data: DateTime(2026, 5, 13),
+    hora: '10:30',
+    tipo: TipoColeta.presencial,
+    doadoraId: 'd03',
+    doadoraNome: 'Beatriz Lima',
+    status: StatusColeta.agendada,
+  ),
+  Coleta(
+    id: 'c03',
+    data: DateTime(2026, 5, 13),
+    hora: '11:30',
+    tipo: TipoColeta.presencial,
+    doadoraId: 'd06',
+    doadoraNome: 'Carla Mendes',
+    status: StatusColeta.concluida,
+    volumeMl: 420,
+  ),
+  Coleta(
+    id: 'c04',
+    data: DateTime(2026, 5, 13),
+    hora: '14:00',
+    tipo: TipoColeta.domiciliar,
+    doadoraId: 'd07',
+    doadoraNome: 'Patrícia Rocha',
+    status: StatusColeta.agendada,
+  ),
+  Coleta(
+    id: 'c05',
+    data: DateTime(2026, 5, 13),
+    hora: '15:30',
+    tipo: TipoColeta.presencial,
+    doadoraId: 'd05',
+    doadoraNome: 'Renata Oliveira',
+    status: StatusColeta.agendada,
+  ),
+];
