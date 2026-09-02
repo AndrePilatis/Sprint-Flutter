@@ -9,6 +9,9 @@ import '../components/doadora_card.dart';
 import '../components/estoque_card.dart';
 import 'doadora_detail_screen.dart';
 import 'nova_coleta_screen.dart';
+import 'nova_doadora_screen.dart';
+
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,8 +24,25 @@ class _HomeScreenState extends State<HomeScreen> {
   int _abaAtual = 0;
 
   late final List<Coleta> _coletas = List.of(coletasMock);
+  late final List<Doadora> _doadoras = List.of(doadorasMock);
 
   static const _titulos = ['Agenda', 'Estoque', 'Doadoras'];
+
+  Future<void> _abrirNovaDoadora() async {
+    final novaDoadora = await Navigator.of(context).push<Doadora>(
+      MaterialPageRoute(builder: (_) => const NovaDoadoraScreen()),
+    );
+
+    if (novaDoadora != null) {
+      setState(() {
+        _doadoras.insert(0, novaDoadora);
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Doadora ${novaDoadora.nome} cadastrada com sucesso.')),
+      );
+    }
+  }
 
   Future<void> _abrirDetalheDoadora(String doadoraId) async {
     final Doadora doadora = buscarDoadoraPorId(doadoraId);
@@ -94,7 +114,11 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             _AgendaTab(coletas: _coletas, onTapColeta: _abrirDetalheDoadora),
             const _EstoqueTab(),
-            _DoadorasTab(onTapDoadora: _abrirDetalheDoadora),
+            _DoadorasTab(
+              doadoras: _doadoras,
+              onTapDoadora: _abrirDetalheDoadora,
+              onNovaDoadora: _abrirNovaDoadora,
+            ),
           ],
         ),
       ),
@@ -104,7 +128,13 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.add),
               label: const Text('Nova coleta'),
             )
-          : null,
+          : _abaAtual == 2
+              ? FloatingActionButton.extended(
+                  onPressed: _abrirNovaDoadora,
+                  icon: const Icon(Icons.person_add_alt_1),
+                  label: const Text('Nova doadora'),
+                )
+              : null,
       bottomNavigationBar: NavigationBar(
         selectedIndex: _abaAtual,
         onDestinationSelected: (index) => setState(() => _abaAtual = index),
@@ -201,24 +231,42 @@ class _EstoqueTab extends StatelessWidget {
 }
 
 class _DoadorasTab extends StatelessWidget {
+  final List<Doadora> doadoras;
   final void Function(String doadoraId) onTapDoadora;
+  final VoidCallback onNovaDoadora;
 
-  const _DoadorasTab({required this.onTapDoadora});
+  const _DoadorasTab({
+    required this.doadoras,
+    required this.onTapDoadora,
+    required this.onNovaDoadora,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final doadoras = List.of(doadorasMock)
+    final listaOrdenada = List.of(doadoras)
       ..sort((a, b) => a.score.compareTo(b.score));
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
       children: [
-        Text(
-          '${doadoras.length} nutrizes conectadas pela LARA',
-          style: Theme.of(context).textTheme.titleMedium,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                '${listaOrdenada.length} nutrizes conectadas pela LARA',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: onNovaDoadora,
+              icon: const Icon(Icons.person_add_alt_1_outlined),
+              label: const Text('Nova doadora'),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
-        for (final doadora in doadoras)
+        for (final doadora in listaOrdenada)
           DoadoraCard(
             doadora: doadora,
             onTap: () => onTapDoadora(doadora.id),
