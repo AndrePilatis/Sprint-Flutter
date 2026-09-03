@@ -10,12 +10,14 @@ class DoadoraDetailScreen extends StatefulWidget {
   final Doadora doadora;
   final List<Doadora> doadoras;
   final void Function(Doadora doadoraAtualizada)? onDoadoraAtualizada;
+  final VoidCallback? onExcluir;
 
   const DoadoraDetailScreen({
     super.key,
     required this.doadora,
     required this.doadoras,
     this.onDoadoraAtualizada,
+    this.onExcluir,
   });
 
   @override
@@ -59,7 +61,39 @@ class _DoadoraDetailScreenState extends State<DoadoraDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_doadora.nome)),
+      appBar: AppBar(
+        title: Text(_doadora.nome),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'Excluir doadora',
+            onPressed: () async {
+              final confirmar = await showDialog<bool>(
+                context: context,
+                builder: (dialogContext) => AlertDialog(
+                  title: const Text('Excluir doadora'),
+                  content: Text('Deseja remover ${_doadora.nome} do painel?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(dialogContext).pop(false),
+                      child: const Text('Cancelar'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(dialogContext).pop(true),
+                      child: const Text('Excluir'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmar == true && context.mounted) {
+                widget.onExcluir?.call();
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),

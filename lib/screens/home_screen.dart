@@ -26,6 +26,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const _titulos = ['Agenda', 'Estoque', 'Doadoras'];
 
+  void _excluirColeta(String coletaId) {
+    final coleta = _coletas.firstWhere((c) => c.id == coletaId);
+    setState(() {
+      _coletas.removeWhere((c) => c.id == coletaId);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Coleta de ${coleta.doadoraNome} removida.')),
+    );
+  }
+
+  void _excluirDoadora(String doadoraId) {
+    final doadora = _doadoras.firstWhere((d) => d.id == doadoraId);
+    setState(() {
+      _doadoras.removeWhere((d) => d.id == doadoraId);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Doadora ${doadora.nome} removida.')),
+    );
+  }
+
   Future<void> _abrirNovaDoadora() async {
     final novaDoadora = await Navigator.of(context).push<Doadora>(
       MaterialPageRoute(builder: (_) => const NovaDoadoraScreen()),
@@ -57,6 +77,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 _doadoras[index] = doadoraAtualizada;
               }
             });
+          },
+          onExcluir: () {
+            _excluirDoadora(doadora.id);
           },
         ),
       ),
@@ -122,7 +145,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: IndexedStack(
           index: _abaAtual,
           children: [
-            _AgendaTab(coletas: _coletas, onTapColeta: _abrirDetalheDoadora),
+            _AgendaTab(
+              coletas: _coletas,
+              onTapColeta: _abrirDetalheDoadora,
+              onExcluirColeta: _excluirColeta,
+            ),
             const _EstoqueTab(),
             _DoadorasTab(
               doadoras: _doadoras,
@@ -173,8 +200,13 @@ class _HomeScreenState extends State<HomeScreen> {
 class _AgendaTab extends StatelessWidget {
   final List<Coleta> coletas;
   final void Function(String doadoraId) onTapColeta;
+  final void Function(String coletaId) onExcluirColeta;
 
-  const _AgendaTab({required this.coletas, required this.onTapColeta});
+  const _AgendaTab({
+    required this.coletas,
+    required this.onTapColeta,
+    required this.onExcluirColeta,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -191,11 +223,17 @@ class _AgendaTab extends StatelessWidget {
           'Quarta-feira · 13 Mai · ${coletas.length} coletas',
           style: Theme.of(context).textTheme.titleMedium,
         ),
+        const SizedBox(height: 8),
+        Text(
+          'Deslize uma coleta para a esquerda pra excluir.',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
         const SizedBox(height: 16),
         for (final coleta in coletas)
           ColetaCard(
             coleta: coleta,
             onTap: () => onTapColeta(coleta.doadoraId),
+            onExcluir: () => onExcluirColeta(coleta.id),
           ),
       ],
     );
