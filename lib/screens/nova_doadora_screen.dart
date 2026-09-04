@@ -22,6 +22,7 @@ class _NovaDoadoraScreenState extends State<NovaDoadoraScreen> {
   final _tipoPartoController = TextEditingController();
   final _statusController = TextEditingController();
   final _telefoneController = TextEditingController();
+  final _scoreController = TextEditingController();
 
   bool get _isEditMode => widget.doadora != null;
 
@@ -39,6 +40,7 @@ class _NovaDoadoraScreenState extends State<NovaDoadoraScreen> {
     _tipoPartoController.text = doadora.tipoParto;
     _statusController.text = doadora.statusAmamentacao;
     _telefoneController.text = doadora.telefone;
+    _scoreController.text = doadora.score.toString();
   }
 
   @override
@@ -51,6 +53,7 @@ class _NovaDoadoraScreenState extends State<NovaDoadoraScreen> {
     _tipoPartoController.dispose();
     _statusController.dispose();
     _telefoneController.dispose();
+    _scoreController.dispose();
     super.dispose();
   }
 
@@ -60,6 +63,7 @@ class _NovaDoadoraScreenState extends State<NovaDoadoraScreen> {
     }
 
     final doadoraAtual = widget.doadora;
+    final score = int.tryParse(_scoreController.text) ?? doadoraAtual?.score ?? 50;
     final doadoraSalva = Doadora(
       id: doadoraAtual?.id ?? 'd${DateTime.now().millisecondsSinceEpoch}',
       nome: _nomeController.text.trim(),
@@ -72,11 +76,11 @@ class _NovaDoadoraScreenState extends State<NovaDoadoraScreen> {
       tipoParto: _tipoPartoController.text.trim().isNotEmpty
           ? _tipoPartoController.text.trim()
           : doadoraAtual?.tipoParto ?? 'Normal',
-      risco: doadoraAtual?.risco ?? NivelRisco.medio,
+      risco: riscoParaScore(score),
       statusAmamentacao: _statusController.text.trim().isNotEmpty
           ? _statusController.text.trim()
           : doadoraAtual?.statusAmamentacao ?? 'Ativa no programa',
-      score: doadoraAtual?.score ?? 50,
+      score: score,
       diaJornada: doadoraAtual?.diaJornada ?? 1,
       telefone: _telefoneController.text.trim(),
       jornada: doadoraAtual?.jornada ??
@@ -193,6 +197,17 @@ class _NovaDoadoraScreenState extends State<NovaDoadoraScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Status da amamentação',
                   prefixIcon: Icon(Icons.monitor_heart_outlined),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _scoreController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Score de engajamento (0 a 100)',
+                  hintText: 'Ex.: 50',
+                  prefixIcon: Icon(Icons.speed_outlined),
                   border: OutlineInputBorder(),
                 ),
               ),

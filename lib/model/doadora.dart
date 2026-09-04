@@ -2,6 +2,12 @@ import 'evento_jornada.dart';
 
 enum NivelRisco { baixo, medio, alto }
 
+NivelRisco riscoParaScore(int score) {
+  if (score >= 60) return NivelRisco.baixo;
+  if (score >= 30) return NivelRisco.medio;
+  return NivelRisco.alto;
+}
+
 class Doadora {
   final String id;
   final String nome;
@@ -45,4 +51,22 @@ class Doadora {
   }
 
   double get progressoJornada => (diaJornada / 30).clamp(0, 1).toDouble();
+
+  Doadora copyWith({int? score, NivelRisco? risco}) {
+    return Doadora(
+      id: id,
+      nome: nome,
+      idade: idade,
+      cidade: cidade,
+      bebeNome: bebeNome,
+      bebeIdadeDias: bebeIdadeDias,
+      tipoParto: tipoParto,
+      risco: risco ?? this.risco,
+      statusAmamentacao: statusAmamentacao,
+      score: score ?? this.score,
+      diaJornada: diaJornada,
+      telefone: telefone,
+      jornada: jornada,
+    );
+  }
 }

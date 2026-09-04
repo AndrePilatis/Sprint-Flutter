@@ -30,8 +30,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _excluirColeta(String coletaId) {
     final coleta = _coletas.firstWhere((c) => c.id == coletaId);
+
     setState(() {
       _coletas.removeWhere((c) => c.id == coletaId);
+
+      final indexDoadora =
+          _doadoras.indexWhere((d) => d.id == coleta.doadoraId);
+      if (indexDoadora != -1) {
+        final doadoraAtual = _doadoras[indexDoadora];
+        final novoScore = (doadoraAtual.score - 10).clamp(0, 100);
+        _doadoras[indexDoadora] = doadoraAtual.copyWith(
+          score: novoScore,
+          risco: riscoParaScore(novoScore),
+        );
+      }
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Coleta de ${coleta.doadoraNome} removida.')),
@@ -95,6 +107,17 @@ class _HomeScreenState extends State<HomeScreen> {
           doadoraNome: coleta.doadoraNome,
         ),
       );
+
+      final indexDoadora =
+          _doadoras.indexWhere((d) => d.id == coleta.doadoraId);
+      if (indexDoadora != -1) {
+        final doadoraAtual = _doadoras[indexDoadora];
+        final novoScore = (doadoraAtual.score + 10).clamp(0, 100);
+        _doadoras[indexDoadora] = doadoraAtual.copyWith(
+          score: novoScore,
+          risco: riscoParaScore(novoScore),
+        );
+      }
     });
 
     if (!mounted) return;
@@ -136,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _abrirDetalheDoadora(String doadoraId) async {
-    final Doadora doadora = buscarDoadoraPorId(doadoraId);
+    final Doadora doadora =
+        _doadoras.firstWhere((doadora) => doadora.id == doadoraId);
     final novaColeta = await Navigator.of(context).push<Coleta>(
       MaterialPageRoute(
         builder: (_) => DoadoraDetailScreen(
