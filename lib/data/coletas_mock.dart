@@ -44,7 +44,7 @@ final List<Coleta> coletasMock = [
     hora: '15:30',
     tipo: TipoColeta.presencial,
     doadoraId: 'd05',
-    doadoraNome: 'Renata Oliveira',
+    doadoraNome: 'Maria Eduarda Oliveira',
     status: StatusColeta.agendada,
   ),
 ];

@@ -26,7 +26,7 @@ final List<ItemEstoque> estoqueMock = [
     validade: DateTime(2026, 8, 25),
     lote: 'LT-0510C',
     status: StatusEstoque.reservado,
-    doadoraNome: 'Renata Oliveira',
+    doadoraNome: 'Maria Eduarda Oliveira',
   ),
   ItemEstoque(
     id: 'e04',

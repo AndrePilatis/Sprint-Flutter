@@ -6,12 +6,14 @@ class ColetaCard extends StatelessWidget {
   final Coleta coleta;
   final VoidCallback onTap;
   final VoidCallback onExcluir;
+  final VoidCallback onConcluir;
 
   const ColetaCard({
     super.key,
     required this.coleta,
     required this.onTap,
     required this.onExcluir,
+    required this.onConcluir,
   });
 
   Color get _corStatus {
@@ -107,6 +109,13 @@ class ColetaCard extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (coleta.status == StatusColeta.agendada)
+                  IconButton(
+                    icon: const Icon(Icons.check_circle_outline),
+                    tooltip: 'Marcar como concluída',
+                    color: Colors.green,
+                    onPressed: onConcluir,
+                  ),
                 StatusBadge(texto: coleta.statusLabel, cor: _corStatus),
               ],
             ),

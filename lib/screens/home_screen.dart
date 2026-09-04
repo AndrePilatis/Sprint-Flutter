@@ -4,6 +4,7 @@ import '../data/doadoras_mock.dart';
 import '../data/estoque_mock.dart';
 import '../model/coleta.dart';
 import '../model/doadora.dart';
+import '../model/item_estoque.dart';
 import '../components/coleta_card.dart';
 import '../components/doadora_card.dart';
 import '../components/estoque_card.dart';
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late final List<Coleta> _coletas = List.of(coletasMock);
   late final List<Doadora> _doadoras = List.of(doadorasMock);
+  late final List<ItemEstoque> _estoque = List.of(estoqueMock);
 
   static const _titulos = ['Agenda', 'Estoque', 'Doadoras'];
 
@@ -33,6 +35,75 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Coleta de ${coleta.doadoraNome} removida.')),
+    );
+  }
+
+  Future<void> _concluirColeta(String coletaId) async {
+    final coleta = _coletas.firstWhere((c) => c.id == coletaId);
+    final volumeController = TextEditingController();
+
+    final volumeInformado = await showDialog<int>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Concluir coleta'),
+        content: TextField(
+          controller: volumeController,
+          keyboardType: TextInputType.number,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'Volume coletado (ml)',
+            hintText: 'Ex.: 250',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final volume = int.tryParse(volumeController.text);
+              Navigator.of(dialogContext).pop(volume);
+            },
+            child: const Text('Confirmar'),
+          ),
+        ],
+      ),
+    );
+
+    if (volumeInformado == null || volumeInformado <= 0) return;
+
+    setState(() {
+      final index = _coletas.indexWhere((c) => c.id == coletaId);
+      if (index != -1) {
+        _coletas[index] = _coletas[index].copyWith(
+          status: StatusColeta.concluida,
+          volumeMl: volumeInformado,
+        );
+      }
+
+      _estoque.insert(
+        0,
+        ItemEstoque(
+          id: 'e${DateTime.now().millisecondsSinceEpoch}',
+          tipo: TipoLeite.maduro,
+          volumeMl: volumeInformado,
+          validade: DateTime.now().add(const Duration(days: 180)),
+          lote:
+              'LT-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
+          status: StatusEstoque.pasteurizando,
+          doadoraNome: coleta.doadoraNome,
+        ),
+      );
+    });
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Coleta concluída: $volumeInformado ml de ${coleta.doadoraNome} adicionados ao estoque.',
+        ),
+      ),
     );
   }
 
@@ -151,8 +222,9 @@ class _HomeScreenState extends State<HomeScreen> {
               coletas: _coletas,
               onTapColeta: _abrirDetalheDoadora,
               onExcluirColeta: _excluirColeta,
+              onConcluirColeta: _concluirColeta,
             ),
-            const _EstoqueTab(),
+            _EstoqueTab(itens: _estoque),
             _DoadorasTab(
               doadoras: _doadoras,
               onTapDoadora: _abrirDetalheDoadora,
@@ -203,11 +275,13 @@ class _AgendaTab extends StatelessWidget {
   final List<Coleta> coletas;
   final void Function(String doadoraId) onTapColeta;
   final void Function(String coletaId) onExcluirColeta;
+  final void Function(String coletaId) onConcluirColeta;
 
   const _AgendaTab({
     required this.coletas,
     required this.onTapColeta,
     required this.onExcluirColeta,
+    required this.onConcluirColeta,
   });
 
   @override
@@ -231,6 +305,7 @@ class _AgendaTab extends StatelessWidget {
             coleta: coleta,
             onTap: () => onTapColeta(coleta.doadoraId),
             onExcluir: () => onExcluirColeta(coleta.id),
+            onConcluir: () => onConcluirColeta(coleta.id),
           ),
       ],
     );
@@ -238,12 +313,13 @@ class _AgendaTab extends StatelessWidget {
 }
 
 class _EstoqueTab extends StatelessWidget {
-  const _EstoqueTab();
+  final List<ItemEstoque> itens;
+
+  const _EstoqueTab({required this.itens});
 
   @override
   Widget build(BuildContext context) {
-    final disponiveis =
-        estoqueMock.fold<int>(0, (soma, item) => soma + item.volumeMl);
+    final volumeTotal = itens.fold<int>(0, (soma, item) => soma + item.volumeMl);
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
@@ -259,7 +335,7 @@ class _EstoqueTab extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 Text(
-                  '$disponiveis ml',
+                  '$volumeTotal ml',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -269,7 +345,7 @@ class _EstoqueTab extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        for (final item in estoqueMock) EstoqueCard(item: item),
+        for (final item in itens) EstoqueCard(item: item),
       ],
     );
   }
