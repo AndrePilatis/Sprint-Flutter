@@ -57,7 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Doadora ${novaDoadora.nome} cadastrada com sucesso.')),
+        SnackBar(
+            content:
+                Text('Doadora ${novaDoadora.nome} cadastrada com sucesso.')),
       );
     }
   }
@@ -129,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('BLH Atibaia'),
+            const Text('BLH'),
             Text(
               _titulos[_abaAtual],
               style: Theme.of(context)
@@ -219,11 +221,6 @@ class _AgendaTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
       children: [
-        Text(
-          'Quarta-feira · 13 Mai · ${coletas.length} coletas',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 8),
         Text(
           'Deslize uma coleta para a esquerda pra excluir.',
           style: Theme.of(context).textTheme.bodySmall,
