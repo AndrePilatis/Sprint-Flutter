@@ -252,7 +252,6 @@ class _HomeScreenState extends State<HomeScreen> {
             _DoadorasTab(
               doadoras: _doadoras,
               onTapDoadora: _abrirDetalheDoadora,
-              onNovaDoadora: _abrirNovaDoadora,
             ),
           ],
         ),
@@ -378,12 +377,10 @@ class _EstoqueTab extends StatelessWidget {
 class _DoadorasTab extends StatelessWidget {
   final List<Doadora> doadoras;
   final void Function(String doadoraId) onTapDoadora;
-  final VoidCallback onNovaDoadora;
 
   const _DoadorasTab({
     required this.doadoras,
     required this.onTapDoadora,
-    required this.onNovaDoadora,
   });
 
   @override
@@ -394,21 +391,9 @@ class _DoadorasTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Text(
-                '${listaOrdenada.length} nutrizes conectadas pela LARA',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            TextButton.icon(
-              onPressed: onNovaDoadora,
-              icon: const Icon(Icons.person_add_alt_1_outlined),
-              label: const Text('Nova doadora'),
-            ),
-          ],
+        Text(
+          '${listaOrdenada.length} nutrizes conectadas pela LARA',
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 16),
         for (final doadora in listaOrdenada)
