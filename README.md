@@ -23,19 +23,19 @@ acompanha o risco de abandono das nutrizes conectadas.
 
 ## Telas
 
-[Painel do Gestor](docs/screenshots/Painel_do_Gestor.png)
+[Painel do Gestor](docs/screenshots/Painel%20do%20Gestor.png)
 
-[Agenda de Coletas](docs/screenshots/Agenda_de_Coletas.png)
+[Agenda de Coletas](docs/screenshots/Agenda%20de%20Coletas.png)
 
-[Volume em Estoque](docs/screenshots/Volume_em_Estoque.png)
+[Volume em Estoque](docs/screenshots/Volume%20em%20Estoque.png)
 
-[Doadoras Cadastradas](docs/screenshots/Doadoras_Cadastradas.png)
+[Doadoras Cadastradas](docs/screenshots/Doadoras%20Cadastradas.png)
 
-[Exemplo de Doadora](docs/screenshots/Exemplo_de_Doadora.png)
+[Exemplo de Doadora](docs/screenshots/Exemplo%20de%20Doadora.png)
 
-[Nova Coleta](docs/screenshots/Nova_Coleta.png)
+[Nova Coleta](docs/screenshots/Nova%20Coleta.png)
 
-[Nova Doadora](docs/screenshots/Nova_Doadora.png)
+[Nova Doadora](docs/screenshots/Nova%20Doadora.png)
 
 ## Vídeo de demonstração
 
