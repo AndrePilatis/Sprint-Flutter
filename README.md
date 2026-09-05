@@ -23,19 +23,19 @@ acompanha o risco de abandono das nutrizes conectadas.
 
 ## Telas
 
-| Painel do Gestor | `docs/screenshots/Painel_do_Gestor.png` | Apresentação do app e botão para entrar no painel |
+[Painel do Gestor](docs/screenshots/Painel_do_Gestor.png)
 
-| Agenda de Coletas | `docs/screenshots/Agenda de Coletas.png` | Coletas do dia, com opção de concluir, excluir ou agendar uma nova |
+[Agenda de Coletas](docs/screenshots/Agenda_de_Coletas.png)
 
-| Volume em Estoque | `docs/screenshots/Volume_em_Estoque.png` | Lotes de leite, volume total e validade |
+[Volume em Estoque](docs/screenshots/Volume_em_Estoque.png)
 
-| Doadoras Cadastradas | `docs/screenshots/Doadoras_Cadastradas.png` | Nutrizes conectadas, ordenadas por risco, com opção de cadastrar uma nova |
+[Doadoras Cadastradas](docs/screenshots/Doadoras_Cadastradas.png)
 
-| Exemplo de Doadora | `docs/screenshots/Exemplo_de_Doadora_.png` | Dados da nutriz, score, linha do tempo da jornada, editar/excluir |
+[Exemplo de Doadora](docs/screenshots/Exemplo_de_Doadora.png)
 
-| Nova Coleta | `docs/screenshots/Nova_Coleta_.png` | Formulário para agendar uma coleta com uma doadora |
+[Nova Coleta](docs/screenshots/Nova_Coleta.png)
 
-| Nova Doadora | `docs/screenshots/Nova_Doadora.png` | Formulário para cadastrar uma nova nutriz no programa |
+[Nova Doadora](docs/screenshots/Nova_Doadora.png)
 
 ## Vídeo de demonstração
 
