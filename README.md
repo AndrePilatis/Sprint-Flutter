@@ -64,3 +64,14 @@ https://youtu.be/5hfUEmnaTS8
 **Score e risco**
 - Score de engajamento sobe ao concluir uma coleta e cai se uma coleta da doadora for excluída
 - Nível de risco (baixo, médio ou alto) recalculado automaticamente a partir do score, sem precisar de ajuste manual
+
+## Repositório
+
+https://github.com/AndrePilatis/Sprint-Flutter
+
+## Como executar o projeto
+
+Execute os comandos abaixo no terminal:
+
+flutter pub get
+flutter run
