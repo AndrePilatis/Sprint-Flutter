@@ -74,4 +74,5 @@ https://github.com/AndrePilatis/Sprint-Flutter
 Execute os comandos abaixo no terminal:
 
 flutter pub get
+
 flutter run
